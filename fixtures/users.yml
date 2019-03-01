@@ -1,0 +1,5 @@
+App\Message\RegisterUserMessage:
+  user_{1..10}:
+    __construct: ['<username()>', '<email()>', 123qwe, '<firstName()>', '<lastName()>']
+  admin:
+    __construct: [admin, admin@example.com, 123qwe, John, Doe]

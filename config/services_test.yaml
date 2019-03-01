@@ -1,0 +1,21 @@
+services:
+  _instanceof:
+    Dredd\HookInterface:
+      tags: ['dredd.hook']
+  Dredd\:
+    resource: '../tests/Dredd/*'
+    autowire: true
+    autoconfigure: true
+
+  Dredd\HookCollection: ~
+  Dredd\Dredd:
+    class: Dredd\Dredd
+    public: true
+    autowire: true
+    autoconfigure: true
+
+  Dredd\Hook\CurrentUser:
+    class: Dredd\Hook\CurrentUser
+    autowire: true
+    autoconfigure: true
+    arguments: {'$jwtManager': '@lexik_jwt_authentication.jwt_manager'}

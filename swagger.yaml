@@ -1,0 +1,419 @@
+swagger: "2.0"
+info:
+    version: "1.0.0"
+    title: "Users"
+host: "localhost:8000"
+basePath: "/api"
+tags:
+- name: "Auth"
+- name: "User"
+schemes:
+- "http"
+consumes: ["application/json"]
+produces: ["application/json"]
+security:
+  - Bearer: []
+
+paths:
+    /register:
+        post:
+            security: []
+            tags: ["User"]
+            parameters:
+            - in: body
+              name: body
+              schema:
+                type: "object"
+                required:
+                  - username
+                  - email
+                  - firstName
+                  - lastName
+                  - password
+                properties:
+                  username:
+                      type: "string"
+                  email:
+                      type: "string"
+                  firstName:
+                      type: "string"
+                  lastName:
+                      type: "string"
+                  password:
+                      type: "string"
+                example:
+                  username: "john.doe"
+                  email: "email@example.net"
+                  firstName: "John"
+                  lastName: "Doe"
+                  password: "secretpassword"
+            responses:
+                201:
+                    description: "Registered"
+                400:
+                    $ref: "#/responses/Standard400ErrorResponse"
+                500:
+                    $ref: "#/responses/Standard500ErrorResponse"
+    /user/confirm-email:
+        post:
+            tags: ["User"]
+            security: []
+            produces: []
+            summary: "Confirm email with confirmation token."
+            parameters:
+                - in: body
+                  name: token
+                  schema:
+                      type: "object"
+                      required:
+                          - confirmationToken
+                      properties:
+                          confirmationToken:
+                              type: "string"
+                      example:
+                          confirmationToken: "gUOadQL6juG80E74WnUXqin1Q1LeYLYq7tw_7Jt2jZk"
+            responses:
+                204:
+                    description: "OK"
+                400:
+                    $ref: "#/responses/Standard400ErrorResponse"
+                500:
+                    $ref: "#/responses/Standard500ErrorResponse"
+    /login_check:
+        post:
+            security: []
+            tags: ["Auth"]
+            parameters:
+            - in: body
+              name: user
+              schema:
+                  type: "object"
+                  required:
+                  - username
+                  - password
+                  properties:
+                      username:
+                          type: "string"
+                      password:
+                          type: "string"
+                  example:
+                      username: "john.doe"
+                      password: "secretpassword"
+            responses:
+                200:
+                    description: "OK"
+                    schema:
+                        type: "object"
+                        required:
+                          - status
+                          - response
+                        properties:
+                            status:
+                                type: string
+                            response:
+                                type: "object"
+                                required:
+                                  - token
+                                properties:
+                                    token:
+                                      type: string
+                        example:
+                          status: success
+                          response:
+                            token: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE1NTA5OTc0NDgsImV4cCI6MTU1MTAwMTA0OCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoiam9obi5kb2UifQ.alS-kRQQd-uvpkcqH8skXtD5kiqExCRrb3xcAEjlYLRGRitKXivOFMDQ8uFruUzbtrzm1nNKLz-a0ZNBxEcfdyRDi4myUoGl9e1qeTVg-MsgZU42rHW4Z6_u8rNhOBTRdrUcBhp3B8mYODrSPz9bPMlj_yC3d3TIjPZAcS7_steaHVM7KTaAwjKeO1bE4hLxUAhBG66ZXQuLae2IDDp1WTdHbV9VewI9o8qk05CCRSfi-82coHQAsHwAsVXBEIA-GemAUaG4Q1eLqHtiygf0zfRHtWW6cVuqwGRcdST23dyYUReQ5jJL-TqkRXHkJI-9n_92JG8nQWYqMj95H11P38yHfYZdB4bjZMUuyJlyItYiMUZ85Uo2-5P0mV329JCqWzPb7sPoJj3DATTMlKm2tLcGMtxTkFMyXlbrG6gFvW4uEWQy6AvBYPVe4_dEDA1s9QpZi1X3vBaSTQQMQOwJXiXptVwv-xJx0BdC_3Z-mPmc8J_VHPX3AQ9fhSfJd1BoarwW-h2wVTZ23Yl0KYxQkODmAANgyH88J2-h3eh3G7Dlruih0Hpx9HoWnrwBruNV97YsH_28Ybzc0IBVXIt09SOCJOFQNYH548jYc8WHD0j_ze-OPvKebvFPIyE0UeR-NW5oKAygqyOejcpNtoboh8YSZuF8NCgAf5-6i8ZOUXg
+                401:
+                    $ref: "#/responses/Standard401ErrorResponse"
+                500:
+                    $ref: "#/responses/Standard500ErrorResponse"
+    /user/change-password:
+        put:
+            tags: ["User"]
+            summary: "Changes current user's password."
+            produces: []
+            parameters:
+            - in: body
+              name: user
+              schema:
+                  type: "object"
+                  required:
+                  - currentPassword
+                  - newPassword
+                  properties:
+                      currentPassword:
+                          type: "string"
+                      newPassword:
+                          type: "string"
+                  example:
+                      currentPassword: "secretpassword"
+                      newPassword: "newsecretpassword"
+            responses:
+                204:
+                    description: "OK"
+                400:
+                    $ref: "#/responses/Standard400ErrorResponse"
+                401:
+                    $ref: "#/responses/Standard401ErrorResponse"
+                500:
+                    $ref: "#/responses/Standard500ErrorResponse"
+    /user/change-email:
+        put:
+            tags: ["User"]
+            summary: "Changes current user's email."
+            produces: []
+            parameters:
+                - in: body
+                  name: user
+                  schema:
+                      type: "object"
+                      required:
+                          - password
+                          - newEmail
+                      properties:
+                          newEmail:
+                              type: "string"
+                          password:
+                              type: "string"
+                      example:
+                          newEmail: "new@email.com"
+                          password: "secretpassword"
+            responses:
+                204:
+                    description: "OK"
+                400:
+                    $ref: "#/responses/Standard400ErrorResponse"
+                401:
+                    $ref: "#/responses/Standard401ErrorResponse"
+                500:
+                    $ref: "#/responses/Standard500ErrorResponse"
+    /user/change-name:
+        put:
+            tags: ["User"]
+            summary: "Changes current user's name."
+            produces: []
+            parameters:
+                - in: body
+                  name: user
+                  schema:
+                      type: "object"
+                      required:
+                          - firstName
+                          - lastName
+                      properties:
+                          firstName:
+                              type: "string"
+                          lastName:
+                              type: "string"
+                      example:
+                          firstName: "Jane"
+                          lastName: "Doe"
+            responses:
+                204:
+                    description: "OK"
+                400:
+                    $ref: "#/responses/Standard400ErrorResponse"
+                401:
+                    $ref: "#/responses/Standard401ErrorResponse"
+                500:
+                    $ref: "#/responses/Standard500ErrorResponse"
+    /user/me:
+        get:
+            tags: ["User"]
+            summary: "Returns current user"
+            responses:
+                200:
+                    description: "OK"
+                    schema:
+                        type: "object"
+                        required:
+                            - status
+                            - response
+                        properties:
+                            status:
+                                type: "string"
+                            response:
+                                $ref: '#/definitions/User'
+                401:
+                    $ref: "#/responses/Standard401ErrorResponse"
+                500:
+                    $ref: "#/responses/Standard500ErrorResponse"
+    /user:
+        get:
+            tags: ["User"]
+            summary: "Returns list of users"
+            parameters:
+              - $ref: '#/parameters/limit'
+              - $ref: '#/parameters/page'
+            responses:
+                200:
+                    description: "OK"
+                    schema:
+                        type: "object"
+                        required:
+                          - status
+                          - response
+                        properties:
+                          status:
+                              $ref: '#/definitions/ApiStatus'
+                          response:
+                              allOf:
+                              - $ref: '#/definitions/Pager'
+                              - type: "object"
+                                properties:
+                                  items:
+                                    type: array
+                                    uniqueItems: true
+                                    items:
+                                      $ref: '#/definitions/UserCollectionItem'
+                401:
+                    $ref: "#/responses/Standard401ErrorResponse"
+                500:
+                    $ref: "#/responses/Standard500ErrorResponse"
+securityDefinitions:
+    Bearer:
+        type: "apiKey"
+        name: "Authorization"
+        in: "header"
+definitions:
+    ApiStatus:
+      type: string
+      enum:
+        - success
+        - error
+    ApiError:
+        type: "object"
+        required:
+          - status
+          - errors
+        properties:
+            status:
+                $ref: "#/definitions/ApiStatus"
+            errors:
+                type: "array"
+                items:
+                    type: "object"
+                    required:
+                      - code
+                      - name
+                      - description
+                    properties:
+                        code:
+                            type: "string"
+                        name:
+                            type: "string"
+                        description:
+                            type: "string"
+        example:
+            status: error
+            errors:
+              - {code: 0, name: username, description: "username is required"}
+    Pager:
+      properties:
+        totalPages:
+          type: integer
+          minimum: 1
+          exclusiveMinimum: false
+          format: uint32
+        limit:
+          type: integer
+          minimum: 10
+          exclusiveMinimum: false
+          format: uint32
+        currentPage:
+          type: integer
+          minimum: 1
+          exclusiveMinimum: false
+          format: uint32
+        totalItems:
+          type: integer
+          minimum: 0
+          exclusiveMinimum: false
+          format: uint32
+
+    User:
+        type: "object"
+        required:
+          - id
+          - username
+          - email
+          - firstName
+          - lastName
+        properties:
+            id:
+                type: "string"
+                readOnly: true
+            username:
+                type: "string"
+            email:
+                type: "string"
+            firstName:
+                type: "string"
+            lastName:
+                type: "string"
+        example:
+            id: "d4f24308-922c-49fd-aed5-043de469c1cd"
+            username: "john.doe"
+            email: "email@example.net"
+            firstName: "John"
+            lastName: "Doe"
+    UserCollectionItem:
+        type: "object"
+        required:
+          - id
+          - username
+          - firstName
+          - lastName
+        properties:
+            id:
+                type: "string"
+                readOnly: true
+            username:
+                type: "string"
+            firstName:
+                type: "string"
+            lastName:
+                type: "string"
+        example:
+            id: "d4f24308-922c-49fd-aed5-043de469c1cd"
+            username: "john.doe"
+            firstName: "John"
+            lastName: "Doe"
+responses:
+  Standard500ErrorResponse:
+    description: Internal Server Error
+    schema:
+      $ref: "#/definitions/ApiError"
+  Standard400ErrorResponse:
+    description: Validation Error
+    schema:
+      $ref: "#/definitions/ApiError"
+  Standard401ErrorResponse:
+    description: JWT Token Not Found
+    schema:
+      $ref: "#/definitions/ApiError"
+parameters:
+  limit:
+    name: limit
+    in: query
+    description: Number of items returned
+    type: integer
+    format: int32
+    minimum: 10
+    exclusiveMinimum: false
+    maximum: 100
+    exclusiveMaximum: false
+    multipleOf: 10
+    default: 10
+    x-example: 10
+  page:
+    name: page
+    in: query
+    description: Page number
+    type: integer
+    format: int32
+    minimum: 1
+    exclusiveMinimum: false
+    maximum: 500
+    exclusiveMaximum: false
+    multipleOf: 10
+    default: 1
+    x-example: 1

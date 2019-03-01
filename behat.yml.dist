@@ -1,0 +1,18 @@
+default:
+    suites:
+        users:
+            contexts:
+                - Context\Doctrine
+                - Context\MessageBus
+                - Context\Users\Registration
+                - Context\Users\ChangeName
+                - Context\Users\ChangeEmail
+                - Context\Users\ChangePassword
+            paths:
+                - features/users
+
+    extensions:
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: tests/behat/bootstrap.php
+                class: App\Kernel

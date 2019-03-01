@@ -1,0 +1,43 @@
+easy_admin:
+    site_name: Restaurants
+    formats:
+        date:     'd/m/Y'
+        time:     'H:i'
+        datetime: 'd/m/Y H:i'
+    list:
+        max_results: 10
+    disabled_actions: ['delete', 'edit']
+    entities:
+        Hello:
+            class: App\Entity\Hello
+            form:
+                fields:
+                  - { type: 'section', label: 'User Details' }
+                  - name
+
+        User:
+            class: App\Entity\User
+            controller: App\Controller\Admin\UserController
+            label: Users
+            help: 'Global message displayed in all views'
+            list:
+              title: 'Most Recent Users'
+              fields: ['username', {property: email, type: email}, {property: isEmailConfirmed, type: boolean}, 'firstName', 'lastName', {property: createdAt, type: datetime, title: "Registered At"} ]
+              sort: 'createdAt'
+              actions: [search, show]
+            show:
+              title: '%%entity_id%%'
+              fields: [username, {property: email, type: email}, name, roles, createdAt, isEmailConfirmed]
+            search:
+              # use an array to also define the sorting direction
+              sort: createdAt
+            new:
+              fields:
+                - { type: 'section', label: 'Credentials' }
+                - username
+                - { property: email, type: email }
+                - { property: password, type: password, label: 'New Password',  help: 'Help me' }
+                - { type: 'section', label: 'Name' }
+                - firstName
+                - lastName
+              message: 'App\Message\RegisterUserMessage'
